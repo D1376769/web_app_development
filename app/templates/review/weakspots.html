@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="fw-bold text-danger"><i class="fa-solid fa-fire me-2"></i> 錯題 / 盲點清單</h2>
+    <p class="text-secondary">這些是你標記為不熟悉，或是測驗中答錯的知識點，建議集中複習。</p>
+</div>
+
+<div class="row g-4">
+    {% for note in notes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column border-danger" style="border-opacity: 0.3;">
+            <h5 class="fw-bold mb-3">{{ note.summary }}</h5>
+            <p class="card-text text-secondary mt-auto pt-3 border-top border-secondary border-opacity-25">
+                <small>下次複習: {{ note.next_review_date }}</small>
+            </p>
+            <a href="{{ url_for('notes.detail', id=note.id) }}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="glass-card p-5 text-center">
+            <div class="display-4 text-success mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+            <p class="text-secondary fs-5 mb-0">太強了！你目前沒有任何盲點紀錄。</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

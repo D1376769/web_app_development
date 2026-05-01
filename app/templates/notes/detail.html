@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ url_for('notes.index') }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> 返回列表</a>
+            <div>
+                <a href="{{ url_for('notes.edit_note', id=note.id) }}" class="btn btn-sm btn-outline-light me-2"><i class="fa-solid fa-pen"></i> 編輯</a>
+                <form action="{{ url_for('notes.delete_note', id=note.id) }}" method="POST" class="d-inline" onsubmit="return confirm('確定要刪除這篇筆記嗎？');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="glass-card p-4 p-md-5">
+            <div class="d-flex gap-2 mb-4">
+                {% for tag in tags %}
+                <span class="tag-badge">{{ tag.name }}</span>
+                {% endfor %}
+                {% if note.is_weakspot %}
+                <span class="badge weakspot-badge">🔥 盲點</span>
+                {% endif %}
+            </div>
+            
+            <h1 class="fw-bold mb-4 pb-3 border-bottom border-secondary border-opacity-25">{{ note.summary }}</h1>
+            
+            <div class="fs-5 text-light" style="white-space: pre-wrap; line-height: 1.8;">{{ note.extension or '沒有延伸筆記。' }}</div>
+            
+            <div class="mt-5 pt-4 border-top border-secondary border-opacity-25 text-secondary small d-flex justify-content-between">
+                <span>建立於: {{ note.created_at }}</span>
+                <span>下次複習: {{ note.next_review_date }} (間隔: {{ note.review_interval }}天)</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{{ url_for('notes.index') }}" class="btn btn-sm btn-outline-secondary me-3"><i class="fa-solid fa-arrow-left"></i> 返回</a>
+            <h2 class="fw-bold mb-0">新增筆記</h2>
+        </div>
+
+        <div class="glass-card p-4 p-md-5">
+            <form action="{{ url_for('notes.create_note') }}" method="POST">
+                <div class="mb-4">
+                    <label for="summary" class="form-label fw-bold">核心摘要 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control form-control-lg" id="summary" name="summary" value="{{ summary|default('') }}" placeholder="用一句話總結這個知識點" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="extension" class="form-label fw-bold">延伸思考與細節</label>
+                    <textarea class="form-control" id="extension" name="extension" rows="8" placeholder="寫下詳細的解釋、例子或是你自己的見解...">{{ extension|default('') }}</textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="tags" class="form-label fw-bold">標籤 (以逗號分隔)</label>
+                    <input type="text" class="form-control" id="tags" name="tags" value="{{ tags|default('') }}" placeholder="例如: 心理學, 認知偏差, 學習法">
+                </div>
+                
+                <div class="d-grid mt-5">
+                    <button type="submit" class="btn btn-primary-custom btn-lg">儲存筆記</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

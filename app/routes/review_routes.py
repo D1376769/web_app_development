@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.models.note import Note
 
 review_bp = Blueprint('review', __name__, url_prefix='/review')
 
@@ -6,28 +7,36 @@ review_bp = Blueprint('review', __name__, url_prefix='/review')
 def weakspots():
     """
     錯題/盲點清單
-    輸入: 無
-    處理邏輯: 從 DB 查詢 is_weakspot = 1 的所有筆記
-    輸出: 渲染 review/weakspots.html
     """
-    pass
+    all_notes = Note.get_all()
+    weak_notes = [note for note in all_notes if note['is_weakspot'] == 1]
+    return render_template('review/weakspots.html', notes=weak_notes)
 
 @review_bp.route('/quiz')
 def quiz():
     """
     測驗模式 (閃卡)
-    輸入: 無
-    處理邏輯: 呼叫 Note.get_due_for_review() 取出第一筆作為題目
-    輸出: 渲染 review/quiz.html，若無題目則顯示完成提示
     """
-    pass
+    due_notes = Note.get_due_for_review()
+    if not due_notes:
+        flash('目前沒有需要複習的筆記！太棒了！', 'success')
+        return redirect(url_for('main.index'))
+        
+    # 取第一筆需要複習的筆記作為題目
+    current_note = due_notes[0]
+    return render_template('review/quiz.html', note=current_note, remaining=len(due_notes))
 
 @review_bp.route('/quiz/submit', methods=['POST'])
 def submit_quiz():
     """
     提交測驗結果
-    輸入: form 欄位 note_id, familiarity (熟悉度)
-    處理邏輯: 呼叫 Note.update_review_schedule(note_id, familiarity) 更新間隔重複資料
-    輸出: 重導向至 /review/quiz 取下一題
     """
-    pass
+    note_id = request.form.get('note_id')
+    familiarity = int(request.form.get('familiarity', 2))
+    
+    if note_id:
+        success = Note.update_review_schedule(int(note_id), familiarity)
+        if not success:
+            flash('記錄複習結果時發生錯誤', 'error')
+            
+    return redirect(url_for('review.quiz'))

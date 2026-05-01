@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">自我測驗</h2>
+            <p class="text-secondary">剩餘 {{ remaining }} 題</p>
+        </div>
+
+        <div class="flashcard-container" onclick="document.querySelector('.flashcard').classList.toggle('is-flipped')">
+            <div class="flashcard">
+                <!-- 正面：題目 -->
+                <div class="flashcard-face">
+                    <p class="text-secondary mb-4">請回想關於以下主題的細節：</p>
+                    <div class="flashcard-content text-primary-emphasis">
+                        {{ note.summary }}
+                    </div>
+                    <div class="flashcard-hint">
+                        點擊翻開答案 <i class="fa-solid fa-hand-pointer ms-1"></i>
+                    </div>
+                </div>
+                
+                <!-- 背面：答案 -->
+                <div class="flashcard-face flashcard-back">
+                    <h5 class="fw-bold mb-3">{{ note.summary }}</h5>
+                    <div class="overflow-auto text-start w-100 px-3" style="max-height: 250px;">
+                        <p style="white-space: pre-wrap;">{{ note.extension or '(無延伸內容)' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-4 text-center mt-4" id="feedback-controls">
+            <p class="mb-3 fw-bold">你剛剛回想得如何？</p>
+            <form action="{{ url_for('review.submit_quiz') }}" method="POST">
+                <input type="hidden" name="note_id" value="{{ note.id }}">
+                <div class="familiarity-btns">
+                    <button type="submit" name="familiarity" value="1" class="btn btn-hard px-4 py-2 rounded-pill fw-bold">
+                        <i class="fa-solid fa-xmark me-1"></i> 忘記了
+                    </button>
+                    <button type="submit" name="familiarity" value="2" class="btn btn-good px-4 py-2 rounded-pill fw-bold">
+                        <i class="fa-solid fa-minus me-1"></i> 普通
+                    </button>
+                    <button type="submit" name="familiarity" value="3" class="btn btn-easy px-4 py-2 rounded-pill fw-bold">
+                        <i class="fa-solid fa-check me-1"></i> 熟練
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

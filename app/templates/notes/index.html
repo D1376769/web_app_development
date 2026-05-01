@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+        {% if current_tag %}
+        <i class="fa-solid fa-tag me-2 text-primary"></i> 標籤：{{ current_tag }}
+        {% else %}
+        <i class="fa-solid fa-layer-group me-2 text-primary"></i> 所有筆記
+        {% endif %}
+    </h2>
+    <a href="{{ url_for('notes.new_note') }}" class="btn btn-primary-custom">
+        <i class="fa-solid fa-plus me-1"></i> 新增筆記
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="glass-card p-3 d-flex flex-wrap gap-2">
+            <span class="text-secondary align-self-center me-2">快速過濾：</span>
+            <a href="{{ url_for('notes.index') }}" class="tag-badge {{ 'bg-primary text-white' if not current_tag }}">全部</a>
+            {% for tag in all_tags %}
+            <a href="{{ url_for('notes.index', tag=tag.name) }}" class="tag-badge {{ 'bg-primary text-white' if current_tag == tag.name }}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for note in notes %}
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card p-4 h-100 d-flex flex-column position-relative">
+            {% if note.is_weakspot %}
+            <div class="position-absolute top-0 end-0 mt-3 me-3 z-3">
+                <span class="badge weakspot-badge" title="盲點/錯題"><i class="fa-solid fa-fire"></i></span>
+            </div>
+            {% endif %}
+            
+            <h5 class="fw-bold mb-3 pe-4">{{ note.summary }}</h5>
+            
+            <div class="mt-auto pt-3">
+                <div class="d-flex flex-wrap gap-1 mb-3 position-relative z-3">
+                    {% for tag in note.tags %}
+                    <span class="tag-badge">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-3 mt-2 position-relative z-3" style="border-opacity: 0.2">
+                    <small class="text-secondary">{{ note.created_at[:10] }}</small>
+                    <a href="{{ url_for('notes.detail', id=note.id) }}" class="btn btn-sm btn-outline-light rounded-pill px-3">檢視</a>
+                </div>
+            </div>
+            <a href="{{ url_for('notes.detail', id=note.id) }}" class="stretched-link z-1"></a>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="glass-card p-5 text-center">
+            <p class="text-secondary mb-0">目前還沒有符合的筆記。</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

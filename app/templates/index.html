@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-5">
+    <div class="col-md-8">
+        <h1 class="fw-bold mb-2">歡迎回來！</h1>
+        <p class="text-secondary fs-5">今日是個學習的好日子，讓我們繼續累積知識。</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('review.quiz') }}" class="btn btn-primary-custom btn-lg w-100">
+            <i class="fa-solid fa-play me-2"></i> 開始今日測驗
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <h4 class="fw-bold mb-3"><i class="fa-regular fa-calendar-check me-2 text-warning"></i> 今日推薦複習清單</h4>
+        
+        {% if due_notes %}
+            <div class="row g-4">
+                {% for note in due_notes %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card p-4 h-100 d-flex flex-column">
+                        <h5 class="card-title fw-bold">{{ note.summary }}</h5>
+                        {% if note.is_weakspot %}
+                        <span class="badge weakspot-badge align-self-start mb-3">🔥 盲點</span>
+                        {% endif %}
+                        <p class="card-text text-secondary mt-auto pt-3">
+                            <small><i class="fa-regular fa-clock me-1"></i> 上次複習間隔: {{ note.review_interval }} 天</small>
+                        </p>
+                        <a href="{{ url_for('notes.detail', id=note.id) }}" class="stretched-link"></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-card p-5 text-center">
+                <div class="display-1 text-success mb-3"><i class="fa-regular fa-circle-check"></i></div>
+                <h3 class="fw-bold">太棒了！</h3>
+                <p class="text-secondary">你已經完成今天所有的複習任務。<br>休息一下，或去探索新的知識吧！</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
